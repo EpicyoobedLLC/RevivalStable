@@ -1,0 +1,23 @@
+Additions/Changes:
+*coop now shows how many hours (recommended) left per player
+*New account creation system
+*Added a tutorial
+*Window Title now shows version.
+*Added bow and arrows
+
+Bugfixes:
+*Fixed warped survivor health in combat (?)
+*Fixed Cthulhu easter egg
+*Fixed infinite ammo bug
+*Fixed ironman still showing the items option
+*Fixed coop turn spam
+*Fixed glitch with 2 player coop, player 1 dead
+*Fixed zombies attacking before death
+
+Removals:
+*Included mods.
+
+Notes:
+*It is now possible to get a real-time snapshot via github!
+*mods are no longer distributed WITH the game.
+-Get them from the forum instead!
