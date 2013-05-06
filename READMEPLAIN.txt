@@ -6,10 +6,10 @@ Head Developer, Creator - Isaak "Diggyhole" Rogers
 
 Cofounder of Epicyoobed - Sam Gilmore
 
-Codeveloper of Revival - 'MacModder'
+Codeveloper of Revival - Alex Ryan
 
 
 
-For a full list of stuff for Revival, Go here!
+For a full list of stuff for Revival, click the link below.
 
 http://www.minecraftforum.net/topic/1556704-text-based-game-revival/

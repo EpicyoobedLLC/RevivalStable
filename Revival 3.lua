@@ -62,9 +62,9 @@ betatest = 1
 print(pagebreak)
 --------------------SETTINGS--------------------
 Version = 3
-Release = 15
-Build = 113
-ProjectName = "MiniUpdate 1"
+Release = 16
+Build = 120
+ProjectName = "Release 16"
 os.execute("title Revival "..Version.."R"..Release.."B"..Build)
 pagebreak = "--------------------------------------------------------------------------------"
 math.random(100)
@@ -175,14 +175,14 @@ function combat() --FIGHT!
   elseif use == 2 then
    if surv1 == "alive" then
     print(surv1n.." sacrifices himself to save "..surv2n.."!")
-	zombiesHP = zombiesHP - 10
-	surv1HP= surv1HP - 5
+    zombiesHP = zombiesHP - 10
+    surv1HP= surv1HP - 5
    end
   else
    if surv1 == "alive" then
     print(surv1n.." sacrifices himself to save "..surv3n.."!")
-	zombiesHP = zombiesHP - 10
-	surv1HP= surv1HP - 5
+    zombiesHP = zombiesHP - 10
+    surv1HP= surv1HP - 5
    end
   end
  end
@@ -195,7 +195,7 @@ function combat() --FIGHT!
   end
  end
  print("What action?")
- print("Attack : Shoot : Heavy : Quick : Block : Fire")
+ print("Attack : Shoot : Fire : Heavy : Quick : Block")
  print("Ammo: "..ammo)
  print("Arrows: "..arrows)
  attack=io.read()
@@ -213,12 +213,22 @@ function combat() --FIGHT!
  end
  if attack=="shoot" then
   if ammo > 0 then
-   ammo = ammo - 1
-   zombiesHP=zombiesHP-(survatk+10)
-   print("You shoot the "..enemy.." with your gun!")
-   if math.random(100) < 26 then
-    print("Headshot!")
-	zombiesHP=zombiesHP-20
+   if machinegun == "true" then
+    ammo = ammo - 3
+	zombiesHP= zombiesHP-(survatk+20)
+	print("You spray 3 bullets towards the "..enemy.."!")
+	if math.random(100) < 15 then
+	 print("Headshot!")
+	 zombiesHP=zombiesHP-20
+	else
+     ammo = ammo - 1
+     zombiesHP=zombiesHP-(survatk+10)
+     print("You shoot the "..enemy.." with your gun!")
+     if math.random(100) < 26 then
+      print("Headshot!")
+      zombiesHP=zombiesHP-20
+     end
+	end
    end
   else
    print("You have no ammo!")
@@ -265,10 +275,10 @@ function combat() --FIGHT!
    print("You gracefully block the attack!")
    dodge=true
    if math.random(100) < survstr then
-	print("...and land a counter!")
+    print("...and land a counter!")
     zombiesHP=zombiesHP-(survstr+survspd)
    else
-	print("...but fail to counter...")
+    print("...but fail to counter...")
    end
   else
    print("You fail to block the attack...")
@@ -286,14 +296,22 @@ function combat() --FIGHT!
    surv1spd=surv1spd+1
    surv1str=surv1str+1
    surv1HP=survHP
-   regulate()
+   if vs ~= true then
+    regulate()
+   else
+    regulatevs()
+   end
   end
   if current==2 then
    surv2atk=surv2atk+1
    surv2spd=surv2spd+2
    surv2str=surv2str+1
    surv2HP=survHP
-   regulate()
+   if vs ~= true then
+    regulate()
+   else
+    regulatevs()
+   end
   end
   if current==3 then
    surv3atk=surv3atk+1
@@ -304,21 +322,29 @@ function combat() --FIGHT!
   end
  end
  if survHP==0 then
-  if current==1 then
+  if use==1 then
    print(surv1n.." fell victim to the "..enemy.."...")
    io.read()
    surv1HP=0
    surv1energy=25
-   regulate()
+   if vs ~= true then
+    regulate()
+   else
+    regulatevs()
+   end
   end
-  if current==2 then
+  if use==2 then
    print(surv2n.." fell victim to the "..enemy.."...")
    io.read()
    surv2HP=0
    surv2energy=25
-   regulate()
+   if vs ~= true then
+    regulate()
+   else
+    regulatevs()
+   end
   end
-  if current==3 then
+  if use==3 then
    print(surv3n.." fell victim to the "..enemy.."...")
    io.read()
    surv3HP=0
@@ -338,7 +364,7 @@ function combat() --FIGHT!
   else
    dodge=nil
    if enemy == "Cthulhu" then
-	survHP=survHP-(zombiesstr+10-armorprimary)
+    survHP=survHP-(zombiesstr+10-armorprimary)
    else
     survHP=survHP-(zombiesstr-armorprimary)
    end
@@ -425,28 +451,36 @@ function combatsetup() --PREPARE TO FIGHT!
   end
  end
  print("A "..enemy.." approaches!")
- print("use which survivor to fight?")
- if surv1=="alive" then
-  io.write(surv1n.." (1)\n")
- end
- if surv2=="alive" then
-  io.write(surv2n.." (2)\n")
- end
- if surv3=="alive" then
-  io.write(surv3n.." (3)\n")
- end
- if pewds == "true" then
-  io.write("Pewdiepie has run off...?")
-  pewds = nil
- end
- use=io.read("*number")
- if use>3 then
-  print("IMPOSSIBRU!")
-  combatsetup()
- end
- if use<0 then
-  print("EVEN MORE IMPOSSIBRU!")
-  combatsetup()
+ if vs ~= true then
+  print("use which survivor to fight?")
+  if surv1=="alive" then
+   io.write(surv1n.." (1)\n")
+  end
+  if surv2=="alive" then
+   io.write(surv2n.." (2)\n")
+  end
+  if surv3=="alive" then
+   io.write(surv3n.." (3)\n")
+  end
+  if pewds == "true" then
+   io.write("Pewdiepie has run off...?")
+   pewds = nil
+  end
+  use=io.read("*number")
+  if use>3 then
+   print("IMPOSSIBRU!")
+   combatsetup()
+  end
+  if use<0 then
+   print("EVEN MORE IMPOSSIBRU!")
+   combatsetup()
+  end
+ else
+  if current == "1" then
+   use = 1
+  else
+   use = 2
+  end
  end
  if use == 1 then
   if surv1=="alive" then
@@ -573,9 +607,6 @@ function perkchoose() --CHOOSE PERK
  worldgen()
 end
 function mainmenu() --MAIN MENU
- if modmainmenu ~= nil then
-  modmainmenu()
- end
  print("Welcome to Revival "..Version..".")
  print("Play : Quit : Help : About : Changelog : Logout : Settings : Mod : Tutorial")
  menuaction = io.read()
@@ -612,8 +643,15 @@ function mainmenu() --MAIN MENU
     print("NO HELP AVAILABLE")
    end
    print(pagebreak)
-   if modmainmenu ~= nil then
-    modmainmenu()
+   print("Do you want to install another mod?")
+   print("(mod help will only be shown for the newest)")
+   confirm = io.read()
+   confirm = string.lower(confirm)
+   if confirm == "yes" then
+    modloader()
+   else
+    os.execute("cls")
+	print("Returning to main menu.")
    end
    mainmenu()
   end
@@ -813,6 +851,7 @@ function saveplayergame() --SAVE CURRENT GAME
  file:write(surv3.."\n")
  file:write(oma.."\n")
  file:write(HC.."\n")
+ file:write(machinegun.."\n")
  if weapon==nil then
   file:write("nil\n")
  else
@@ -823,8 +862,6 @@ function saveplayergame() --SAVE CURRENT GAME
  else
   file:write(armor.."\n")
  end
- file:write(players.."\n")
- file:write(coop.."\n")
  print(gamesavecheck)
  print(pagebreak)
  file:close()
@@ -988,23 +1025,18 @@ function loadplayergame() --LOAD GAME
  surv3=file:read()
  oma=file:read()
  HC=file:read()
+ machinegun=file:read()
  weapon=file:read()
  armor=file:read()
- players=file:read()
- coop=file:read()
  print(armor)
  if weapon ~= "nil" then
   weaponfile = io.open("Files/ItemFiles/"..weapon..".item", "r")
   weaponfile:read()
-  attackstyle = weaponfile:read()
-  weapondesc = weaponfile:read()
   weaponprimary = weaponfile:read("*number")
  end
  if armor ~= "nil" then
   armorfile = io.open("Files/ItemFiles/"..armor..".item", "r")
   armorfile:read()
-  armorfile:read()
-  armordesc = armorfile:read()
   armorprimary = armorfile:read("*number")
  end
  if weapon=="nil" then
@@ -1461,7 +1493,7 @@ function itemsmenu() --ITEMS MENU
   end
  end
  print(pagebreak)
- pcall(regulate())
+ regulate()
 end
 function startup() --PREPARES GAME
  playing = 1
@@ -1471,6 +1503,7 @@ function startup() --PREPARES GAME
  if coop==nil then
   coop="false"
  end
+ machinegun = "false"
  InvItem01 = 0 --INVENTORY START
  InvItem02 = 0
  InvItem03 = 0
@@ -1600,14 +1633,14 @@ function gameover() --ALL 3 DEAD
   mainmenu()
  end
  if day > record then
-  print("New record!")
+  print("New personal best!")
   record = day
   file = io.open("playerdata/"..user.."settings.dat", "w")
   file:write(""..pass.."\n"..record.."\n")
   io.read()
  end
  if record == 0 then
-  print("RECORD SET!")
+  print("Personal record set!")
   file = io.open("playerdata/"..user.."settings.dat", "w")
   file:write(""..pass.."\n"..record.."\n")
  else
@@ -1624,7 +1657,43 @@ function gameover() --ALL 3 DEAD
  end
  over = true
  print()
- print()
+ if io.open("playerdata/top3.dat", "r") == nil then
+  print("Local high score!")
+  file = io.open("playerdata/top3.dat", "w")
+  file:write(user.."\n"..day.."\n[NONE]\n0n[NONE]\n0")
+  file:close()
+ else
+  file = io.open("playerdata/top3.dat", "r")
+  top1user = file:read()
+  top1 = file:read("*number")
+  file:read()
+  top2user = file:read()
+  top2 = file:read("*number")
+  file:read()
+  top3user = file:read()
+  top2 = file:read("*number")
+  if record > top1 then
+   print("Local highscore set!")
+   top3user = top2user
+   top3 = top2
+   top2user = top1user
+   top2 = top1
+   top1 = record
+   top1user = user
+  elseif record > top2 then
+   print("Local highscore set!")
+   top3user = top2user
+   top3 = top2
+   top2 = record
+   top2user = user
+  elseif record > top3 then
+   print("Local highscore set!")
+   top3user = user
+   top3 = record
+  else
+   print("Didn't make the leaderboard...")
+  end
+ end
  print("Press enter...")
  io.read()
  saveplayergame()
@@ -1712,7 +1781,7 @@ function regulate() --FIX OVERKILLS
   print("Out of supplies! You are starving to death!")
  end
  if supplies < 1 then
-  pcall(regulate())
+  regulate()
  end
  if surv1energy < 1 then
   print(""..surv1n.." passed out!")
@@ -1836,15 +1905,15 @@ function regulate() --FIX OVERKILLS
  end
  if surv1HP < 0 then
   surv1HP = 0
-  pcall(regulate())
+  regulate()
  end
  if surv2HP < 0 then
   surv2HP = 0
-  pcall(regulate())
+  regulate()
  end
  if surv3HP < 0 then
   surv3HP = 0
-  pcall(regulate())
+  regulate()
  end
  if oma == "true" then
   if surv1 == "dead" then
@@ -1867,7 +1936,7 @@ function regulate() --FIX OVERKILLS
   end
   gamemenu()
  else
-  pcall(regulate())
+  regulate()
  end
 end --END OF REGULATION CODE
 function hardcorestats() --STATS IN HARDCORE MODE
@@ -1904,129 +1973,154 @@ function stats2() --NEW STATS
  if modstats2 ~= nil then
   modstats2()
  end
- io.write("Time: "..hour..":00"..AMPM..". Day "..day..".\n")
- if current == 1 then
-  io.write("**")
- end
- io.write(""..surv1n.." / ")
  if surv1HP == 0 then
-  io.write("[___DEAD___]")
+  surv1disp = "[___DEAD___]"
  elseif surv1HP/surv1mHP < .1 then
-  io.write("[#_________]")
+  surv1disp = "[#_________]"
  elseif surv1HP/surv1mHP < .2 then
-  io.write("[##________]")
+  surv1disp = "[##________]"
  elseif surv1HP/surv1mHP < .3 then
-  io.write("[###_______]")
+  surv1disp = "[###_______]"
  elseif surv1HP/surv1mHP < .4 then
-  io.write("[####______]")
+  surv1disp = "[####______]"
  elseif surv1HP/surv1mHP < .5 then
-  io.write("[#####_____]")
+  surv1disp = "[#####_____]"
  elseif surv1HP/surv1mHP < .6 then
-  io.write("[######____]")
+  surv1disp = "[######____]"
  elseif surv1HP/surv1mHP < .7 then
-  io.write("[#######___]")
+  surv1disp = "[#######___]"
  elseif surv1HP/surv1mHP < .8 then
-  io.write("[########__]")
+  surv1disp = "[########__]"
  elseif surv1HP/surv1mHP < .9 then
-  io.write("[#########_]")
+  surv1disp = "[#########_]"
  elseif surv1HP/surv1mHP < 1 then
-  io.write("[#########_]")
+  surv1disp = "[#########_]"
  elseif surv1HP/surv1mHP == 1 then
-  io.write("[##########]")
+  surv1disp = "[##########]"
  end
- if user == "debug" then
-  io.write("\n"..surv1HP.."")
+ if surv2HP == 0 then
+  surv2disp = "[___DEAD___]"
+ elseif surv2HP/surv2mHP < .1 then
+  surv2disp = "[#_________]"
+ elseif surv2HP/surv2mHP < .2 then
+  surv2disp = "[##________]"
+ elseif surv2HP/surv2mHP < .3 then
+  surv2disp = "[###_______]"
+ elseif surv2HP/surv2mHP < .4 then
+  surv2disp = "[####______]"
+ elseif surv2HP/surv2mHP < .5 then
+  surv2disp = "[#####_____]"
+ elseif surv2HP/surv2mHP < .6 then
+  surv2disp = "[######____]"
+ elseif surv2HP/surv2mHP < .7 then
+  surv2disp = "[#######___]"
+ elseif surv2HP/surv2mHP < .8 then
+  surv2disp = "[########__]"
+ elseif surv2HP/surv2mHP < .9 then
+  surv2disp = "[#########_]"
+ elseif surv2HP/surv2mHP < 1 then
+  surv2disp = "[#########_]"
+ elseif surv2HP/surv2mHP == 1 then
+  surv2disp = "[##########]"
  end
- io.write("\n")
- if surv1 == "alive" then
-  io.write("Energy: "..surv1energy.."/"..surv1menergy.."\n")
+ if surv3HP == 0 then
+  surv3disp = "[___DEAD___]"
+ elseif surv3HP/surv3mHP < .1 then
+  surv3disp = "[#_________]"
+ elseif surv3HP/surv3mHP < .2 then
+  surv3disp = "[##________]"
+ elseif surv3HP/surv3mHP < .3 then
+  surv3disp = "[###_______]"
+ elseif surv3HP/surv3mHP < .4 then
+  surv3disp = "[####______]"
+ elseif surv3HP/surv3mHP < .5 then
+  surv3disp = "[#####_____]"
+ elseif surv3HP/surv3mHP < .6 then
+  surv3disp = "[######____]"
+ elseif surv3HP/surv3mHP < .7 then
+  surv3disp = "[#######___]"
+ elseif surv3HP/surv3mHP < .8 then
+  surv3disp = "[########__]"
+ elseif surv3HP/surv3mHP < .9 then
+  surv3disp = "[#########_]"
+ elseif surv3HP/surv3mHP < 1 then
+  surv3disp = "[#########_]"
+ elseif surv3HP/surv3mHP == 1 then
+  surv3disp = "[##########]"
  end
- io.write("\n")
- if surv2 ~= "oma" then
-  if current == 2 then
-   io.write("**")
-  end
-  io.write(""..surv2n.." / ")
-  if surv2HP == 0 then
-   io.write("[___DEAD___]")
-  elseif surv2HP/surv2mHP < .1 then
-   io.write("[#_________]")
-  elseif surv2HP/surv2mHP < .2 then
-   io.write("[##________]")
-  elseif surv2HP/surv2mHP < .3 then
-   io.write("[###_______]")
-  elseif surv2HP/surv2mHP < .4 then
-   io.write("[####______]")
-  elseif surv2HP/surv2mHP < .5 then
-   io.write("[#####_____]")
-  elseif surv2HP/surv2mHP < .6 then
-   io.write("[######____]")
-  elseif surv2HP/surv2mHP < .7 then
-   io.write("[#######___]")
-  elseif surv2HP/surv2mHP < .8 then
-   io.write("[########__]")
-  elseif surv2HP/surv2mHP < .9 then
-   io.write("[#########_]")
-  elseif surv2HP/surv2mHP < 1 then
-   io.write("[#########_]")
-  elseif surv2HP/surv2mHP == 1 then
-   io.write("[##########]")
-  end
-  if user == "debug" then
-   io.write("\n"..surv2HP.."")
-  end
-  io.write("\n")
-  if surv2 == "alive" then
-   io.write("Energy: "..surv2energy.."/"..surv2menergy.."\n")
-  end
+ surv1energyd = surv1energy
+ surv2energyd = surv2energy
+ surv3energyd = surv3energy
+ while string.len(surv1energyd) ~= 12 do
+  surv1energyd = surv1energyd.." "
  end
- if surv3 ~= "oma" then
-  io.write("\n")
-  if current == 3 then
-   io.write("**")
-  end
-  io.write(""..surv3n.." / ")
-  if surv3HP == 0 then
-   io.write("[___DEAD___]")
-  elseif surv3HP/surv3mHP < .1 then
-   io.write("[#_________]")
-  elseif surv3HP/surv3mHP < .2 then
-   io.write("[##________]")
-  elseif surv3HP/surv3mHP < .3 then
-   io.write("[###_______]")
-  elseif surv3HP/surv3mHP < .4 then
-   io.write("[####______]")
-  elseif surv3HP/surv3mHP < .5 then
-   io.write("[#####_____]")
-  elseif surv3HP/surv3mHP < .6 then
-   io.write("[######____]")
-  elseif surv3HP/surv3mHP < .7 then
-   io.write("[#######___]")
-  elseif surv3HP/surv3mHP < .8 then
-   io.write("[########__]")
-  elseif surv3HP/surv3mHP < .9 then
-   io.write("[#########_]")
-  elseif surv3HP/surv3mHP < 1 then
-   io.write("[#########_]")
-  elseif surv3HP/surv3mHP == 1 then
-   io.write("[##########]")
-  end
-  if user == "debug" then
-   io.write("\n"..surv3HP.."")
-  end
-  io.write("\n")
-  if surv3 == "alive" then
-   io.write("Energy: "..surv3energy.."/"..surv3menergy.."\n")
-  end
+ while string.len(surv2energyd) ~= 12 do
+  surv2energyd = surv2energyd.." "
  end
- io.write("\n")
+ while string.len(surv3energyd) ~= 12 do
+  surv3energyd = surv3energyd.." "
+ end
+ surv1menergyd = surv1menergy
+ surv2menergyd = surv2menergy
+ surv3menergyd = surv3menergy
+ while string.len(surv1menergyd) ~= 12 do
+  surv1menergyd = " "..surv1menergyd
+ end
+ while string.len(surv2menergyd) ~= 12 do
+  surv2menergyd = " "..surv2menergyd
+ end
+ while string.len(surv3menergyd) ~= 12 do
+  surv3menergyd = " "..surv3menergyd
+ end
+ surv1nd = surv1n
+ surv2nd = surv2n
+ surv3nd = surv3n
+ while string.len(surv1nd) ~= 14 do
+  surv1nd = surv1nd.." "
+ end
+ while string.len(surv2nd) ~= 14 do
+  surv2nd = surv2nd.." "
+ end
+ while string.len(surv3nd) ~= 14 do
+  surv3nd = surv3nd.." "
+ end
+ if current == 1 then
+  io.write("_**************______________________CURRENT__\n")
+ end
+ if current == 2 then
+  io.write("________________**************_______CURRENT__\n")
+ end
+ if current == 3 then
+  io.write("_______________________________******CURRENT*_\n")
+ end
+ if oma ~= "true" then
+  io.write("|"..surv1nd.."|"..surv2nd.."|"..surv3nd.."|\n")
+  io.write("|______________|______________|______________|\n")
+  io.write("| "..surv1disp.." | "..surv2disp.." | "..surv3disp.." |\n")
+  io.write("|______________|______________|______________|\n")
+  io.write("| Energy:      | Energy:      | Energy:      |\n")
+  io.write("|"..surv1energyd.."  |"..surv2energyd.."  |"..surv3energyd.."  |\n")
+  io.write("|  "..surv1menergyd.."|  "..surv2menergyd.."|  "..surv3menergyd.."|\n")
+  io.write("______________________________________________\n")
+ else
+  io.write("|"..surv1n.."| ONE MAN ARMY |   ACTIVATED  |\n")
+  io.write("|______________|______________|______________|\n")
+  io.write("| "..surv1disp.."|              |              |\n")
+  io.write("|______________|______________|______________|\n")
+  io.write("| Energy:      |              |              |\n")
+  io.write("|"..surv1energyd.."  |              |              |\n")
+  io.write("|  "..surv1menergyd.."|              |              |\n")
+  io.write("______________________________________________\n")
+ end
+ io.write("Time: "..hour..":00"..AMPM..". Day "..day..".\n")
  io.write("Supplies: "..supplies..". "..supplies / 10 .." Days remaining.\n")
- io.write("INVENTORY:\n")
+ io.write("\nINVENTORY:\n")
  io.write("Defib: "..InvItem01..".\n")
  io.write("MedKit: "..InvItem02..".\n")
  io.write("can of Gasoline: "..InvItem03..".\n")
  io.write("Bandages: "..InvItem04..".\n")
  io.write("Ammo: "..ammo..".\n")
+ io.write("Arrows: "..arrows..".\n")
  print (pagebreak)
  if loadid==nil then
   file=io.open("Files/map.txt", "r")
@@ -2269,6 +2363,21 @@ function scavenge2() --NEW SCAVENGE
   end
  end
  if math.random(length) < chancelow then
+  print("You found a sword!")
+  print("equip?")
+  confirm = io.read()
+  if confirm == "" then
+   confirm = io.read()
+  end
+  if confirm == "Yes" then
+   confirm = "yes"
+  end
+  if confirm == "yes" then
+   equipment = "Sword"
+   newequip = true
+  end
+ end
+ if math.random(length) < chancelow then
   print("You found some padded clothing!")
   print("Stop being naked?")
   confirm = io.read()
@@ -2343,6 +2452,18 @@ function scavenge2() --NEW SCAVENGE
    newequip = true
   end
  end
+ if math.random(length) < chancerare then
+  print("You found a machine gun!")
+  print("Replace your pistol?")
+  print("(Uses 3 ammo. Deals 50% more damage. Lower crit. chance.)")
+  confirm = io.read()
+  if confirm == "Yes" then
+   confirm = "yes"
+  end
+  if confirm == "yes" then
+   machinegun = "true"
+  end
+ end
  if eastereggs == "true" then
   if math.random(length) < chanceholycrap then
    print("Felix Kjelberg joins the group!")
@@ -2359,7 +2480,7 @@ function scavenge2() --NEW SCAVENGE
  if newequip == true then
   equip()
  end
- pcall(regulate())
+ regulate()
 end
 function gamemenu() --GAME CODE----------
  length = nil
@@ -2621,7 +2742,7 @@ elseif menuaction == cmd5 then
   gamemenu()
  end
  print(pagebreak)
- pcall(regulate())
+ regulate()
 end
 function extrasmenu() --EXTRAS MENU
  print("Enter your extras code:")
@@ -2713,6 +2834,7 @@ function buildparty() --IF no PLAYERPARTY.DAT IS PRESENT
  mainmenu()
 end
 function login() --ACCOUNT LOGIN
+ os.execute("cls")
  if user == nil then
   print("Loaded. starting game...")
  elseif user == "Nobody" then
@@ -2736,6 +2858,7 @@ function login() --ACCOUNT LOGIN
  if io.open("playerdata/"..user.."settings.dat", "r") == nil then
   register()
  else
+  os.execute("cls")
   file = io.open("playerdata/"..user.."settings.dat", "r")
   print("Enter password:")
   pass = io.read()
@@ -2776,7 +2899,7 @@ function login() --ACCOUNT LOGIN
 end
 function gamechoose() --CHOOSE GAME TYPE
  print("Choose your game")
- print("New : Load : Coop")
+ print("New : Load : Coop : Versus (beta)")
  gametype = io.read()
  os.execute("cls")
  gametype = string.lower(gametype)
@@ -2797,10 +2920,6 @@ function gamechoose() --CHOOSE GAME TYPE
 	gamechoose()
    end
   end
-  if gametype == "versus" then
-   players = "2"
-   versussetup()
-  end
   if players == "3" then
    print("Player 2 name:")
    surv2n = io.read()
@@ -2810,6 +2929,10 @@ function gamechoose() --CHOOSE GAME TYPE
   coop = true
   print(pagebreak)
   perkchoose()
+ end
+ if gametype == "versus" then
+  players = "2"
+  versussetup()
  end
  gamechoose()
 end
@@ -3060,7 +3183,7 @@ function worldgen() --RANDOM WORLD
  else
   world55="home"
  end
- if math.random(100) > 98 then
+ if math.random(1000) > 999 then
   world11="tardis"
  end
  print("Done generating, please wait, setting up map...")
@@ -3192,6 +3315,7 @@ function worldgen() --RANDOM WORLD
  print("Done. Creating spawn point.")
  locX=math.random(1,5)
  locY=math.random(1,5)
+ print("Done.")
  print(locX..", "..locY)
  file=io.open("Files/map.txt", "w")
  file:write(worlddisp11..""..worlddisp21..""..worlddisp31..""..worlddisp41..""..worlddisp51.."\n")
@@ -3385,6 +3509,9 @@ function worldgen() --RANDOM WORLD
    end
   end
  end
+ if vs == true then
+  gamemenuvs()
+ end
  startup()
 end
 function modloader() --MODLOADER
@@ -3392,16 +3519,77 @@ function modloader() --MODLOADER
  file=io.open("Revival 3.lua", "r")
  revival=file:read("*all")
  print("Backing up...")
- file=io.open("Revival 3BACKUP", "w")
+ file=io.open("Revival 3BACKUP.lua", "w")
  file:write(revival)
  print("Backed up.")
  print("Enter the name of the mod.")
  modname=io.read()
+ if io.open("mods/"..modname..".txt", "r") == nil then
+  os.execute("cls")
+  print("Doesn't exist.")
+  mainmenu()
+ end
  file=io.open("mods/"..modname..".txt", "r")
  modcont=file:read("*all")
+ os.execute("cls")
+ print("This mod will affect the following aspects of gameplay:")
+ if string.match(modcont, "function modcombat()") then
+  print("*Combat")
+ end
+ if string.match(modcont, "function modcombatsetup()") then
+  print("*Combat attributes")
+ end
+ if string.match(modcont, "function modperkchoose()") then
+  print("*Perks")
+ end
+ if string.match(modcont, "function modsaveplayergame()") then
+  print("*Saving/Loading")
+ end
+ if string.match(modcont, "function modstartup()") then
+  print("*Custom startup variables")
+ end
+ if string.match(modcont, "function modtravel()") then
+  print("*Travelling")
+ end
+ if string.match(modcont, "function moditemsmenu()") then
+  print("*Items")
+ end
+ if string.match(modcont, "function modrandattack()") then
+  print("*Random attacks")
+ end
+ if string.match(modcont, "function modregulate()") then
+  print("*Game auto-maintenance")
+ end
+ if string.match(modcont, "function modhardcorestats()") then
+  print("*Hardcore stats display")
+ end
+ if string.match(modcont, "function modstats2()") then
+  print("*New stats display")
+ end
+ if string.match(modcont, "function modstats()") then
+  print("*Old stats display")
+ end
+ if string.match(modcont, "function modscavenge2()") then
+  print("*Scavenging and random finds")
+ end
+ if string.match(modcont, "function modpractice()") then
+  print("*Practicing")
+ end
+ if string.match(modcont, "function mod1()") then
+  print("*Custom commands are used")
+ end
+ print(pagebreak)
+ print("Are you sure you wish to install this mod?")
+ confirm = io.read()
+ confirm = string.lower(confirm)
+ os.execute("cls")
+ if confirm ~= "yes" then
+  print("Installation cancelled.")
+  mainmenu()
+ end
  print("Modding...")
  file=io.open("Revival 3.lua", "w")
- file:write(modcont.."\n"..revival.."\ntitlescreen()")
+ file:write(modcont.."\n"..revival)
  print("Mod complete.")
  print("Closing...")
  t=os.time()
@@ -3413,9 +3601,9 @@ function tutorial() --TUTORIAL
  os.execute("Cls")
  print("Welcome to Revival!")
  print("This tutorial will teach you the ropes of the game!")
- print("Note that this tutorial does NOT use your settings!")
+ print("Note: This tutorial does NOT use your settings.")
  print()
- print("Press enter...")
+ print("Please press the 'enter' button to proceed.")
  io.read()
  os.execute("cls")
  print("Time: 0:00AM. Day 1.")
@@ -3436,7 +3624,7 @@ function tutorial() --TUTORIAL
  print("Ammo: 0.")
  print(pagebreak)
  print("Here is your stats screen! Your group and inventory will be displayed here.")
- print("Notice the \"**Hideki Okimoto\" near the top. The asterisks show that he is the")
+ print("Notice the \"**Hideki Okimoto\" near the top. The asterisks (*) show that he is the")
  print("currently controlled survivor.")
  print(pagebreak)
  print("Your map will also be displayed here, but we'll cover that later.")
@@ -3456,7 +3644,7 @@ function tutorial() --TUTORIAL
   print("Great!")
  else
   print("Not quite... You may have had a simple typo. Don't worry! You aren't")
-  print("penalised for typos; except in combat.")
+  print("penalised for typos; except while in combat.")
  end
  print("How long?")
  print()
@@ -3479,7 +3667,7 @@ function tutorial() --TUTORIAL
  print("When you do most actions, you will lose energy. If it runs out, you can")
  print("use the \"sleep\" command to rejuvenate it!")
  print(pagebreak)
- print("Try typing sleep 12 like we discussed before!")
+ print("Try typing 'sleep 12' (without the quotes like we discussed before!")
  input = io.read()
  input = string.lower(input)
  if input == "sleep 12" then
@@ -3511,13 +3699,15 @@ function tutorial() --TUTORIAL
  print("zombies / [##########]")
  print("The zombies prepare it's attack")
  print("What action?")
- print("Attack : Shoot : Heavy : Quick : Block")
+ print("Attack : Shoot : Heavy : Fire : Quick : Block")
  print("Ammo: 0")
  print(pagebreak)
  print("There are 5 options when fighting:")
  print("Attack - Normal attack.")
- print("Shoot - Uses ammo to deal more damage.")
+ print("Shoot - Uses attack and ammo to deal heavy damage. You can also")
+ print("use machine guns and ammo to deal extra damage.")
  print("Heavy - Uses strength to deal heavy damage.")
+ print("Fire - Uses arrows to shoot at the enemy.")
  print("Quick - Uses speed to deal moderate damage.")
  print("Block - Uses attack mainly, and speed to block and counterattack.")
  io.read()
@@ -3600,6 +3790,7 @@ function tutorial() --TUTORIAL
  print("Happy surviving! From the Revival team!")
  print()
  print("Isaak 'Hideki' Rogers - Creator, Head Developer")
+ print("Alex Ryan - Co-Developer")
  print("Sam Gilmore - Co-Creator, Betatester, Advisor")
  print("Jesse 'Airi' Byrd - Betatester, Advisor")
  print("And the staff developing Revival 4!")
@@ -3607,7 +3798,8 @@ function tutorial() --TUTORIAL
 end
 function register() --ACCOUNT CREATION
  os.execute("cls")
- print("Creating a new account, type back to cancel.")
+ print("Creating a new account, type 'back' (without the quotes) to cancel.")
+ print("Set a password:")
  pass = io.read()
  if pass == "back" then
   user = nil
@@ -3615,23 +3807,41 @@ function register() --ACCOUNT CREATION
  end
  file = io.open("playerdata/"..user.."settings.dat", "w")
  file:write(pass)
- file:write("\n0\nnew")
+ file:write("\n0\n")
  file:close()
  file=io.open("playerdata/savegames/"..user.."gameover.dat", "w")
  file:write("good\ngood\ngood")
  file:close()
  os.execute("cls")
- print("Name your party:")
- io.write("Group leader: ")
- surv1n = io.read()
+ surv1n = "overfourteenchars"
+ surv2n = "overfourteenchars"
+ surv3n = "overfourteenchars"
+ while string.len(surv1n) > 14 do
+  print("Name your party: (Max 14 chars.)")
+  io.write("Group leader: ")
+  surv1n = io.read()
+ end
  os.execute("cls")
- print("Name your party:")
- io.write("Group member 1: ")
- surv2n = io.read()
+ while string.len(surv2n) > 14 do
+  print("Name your party:")
+  io.write("Group member 1: ")
+  surv2n = io.read()
+ end
  os.execute("cls")
- print("Name your party:")
- io.write("Group member 2: ")
- surv3n = io.read()
+ while string.len(surv3n) > 14 do
+  print("Name your party:")
+  io.write("Group member 2: ")
+  surv3n = io.read()
+ end
+ while string.len(surv1n) ~= 14 do
+  surv1n = surv1n.." "
+ end
+ while string.len(surv2n) ~= 14 do
+  surv2n = surv2n.." "
+ end
+ while string.len(surv3n) ~= 14 do
+  surv3n = surv3n.." "
+ end
  file = io.open("playerdata/"..user.."party.dat", "w")
  file:write(surv1n.."\n"..surv2n.."\n"..surv3n)
  file:close()
@@ -3644,12 +3854,17 @@ function register() --ACCOUNT CREATION
  if statsscreen ~= "old" then
   if statsscreen ~= "new" then
    print("Not a valid entry. New will be used (Change in the settings screen)")
+   statsscreen = "new"
   end
  end
+ file = io.open("playerdata/"..user.."settings.dat", "a")
+ file:write(statsscreen)
+ file:close()
  os.execute("cls")
  print("Almost done! Do you want to play the tutorial?")
  confirm = io.read()
  confirm = string.lower(confirm)
+ os.execute("cls")
  if confirm ~= "yes" then
   if confirm ~= "no" then
    print("Not a valid entry. Going to main menu...")
@@ -3662,76 +3877,457 @@ function register() --ACCOUNT CREATION
   mainmenu()
  end
 end
-function versussetup()
- print("VERSUS NOT YET FUNCTIONAL!")
- gamechoose()
- InvItem12 = 0
- InvItem22 = 0
- InvItem14 = 0
- InvItem24 = 0 --INVENTORY END
+function versussetup() --PREPARE VERSUS MODE
+ vs = true
  surv1 = "alive" --ALIVE START
- surv2 = "alive" --RESUME
- surv3 = "alive" --ALIVE END
+ surv2 = "alive"
  surv1HP = 10 --HP START
  surv2HP = 10
- surv3HP = 10
  surv1mHP = 10
  surv2mHP = 10
- surv3mHP = 10 --HP END
- if perk == "vitality" then
-  surv1mHP = 30
-  surv2mHP = 30
-  surv3mHP = 30
-  surv1HP = 30
-  surv2HP = 30
-  surv3HP = 30
- end
  surv1energy = 50 --ENERGY START
  surv2energy = 50
- surv3energy = 50
  surv1menergy = 50
  surv2menergy = 50
- surv3menergy = 50 --ENERGY END
- if perk == "night owl" then
-  surv1menergy = 70
-  surv2menergy = 70
-  surv3menergy = 70
-  surv1energy = 70
-  surv2energy = 70
-  surv3energy = 70
- end
  surv1spd=0
  surv2spd=0
- surv3spd=0
  surv1atk=0
  surv2atk=0
- surv3atk=0
  surv1str=0
  surv2str=0
- surv3str=0
- armor=nil
- weapon=nil
- supplies = 20
+ supplies=20
+ supplies2=20
  ammo = 0
- if perk == "prepared" then
-  supplies = 50
-  ammo = 10
- end
- if perk == "veteran" then
-  surv1str=10
-  surv2str=10
-  surv3str=10
- end
+ ammo2 = 0
+ arrows=0
+ arrows2=0
  weapondesc = "You knock the zombie over!"
  hour = 0
+ miltime = 0
  day = 1
  run = 0
  AMPM = "AM"
  current = 1
  oma = "false"
  HC = "false"
+ print("Who will be your competitor?")
+ surv2n=io.read()
+ os.execute("cls")
+ print(surv1n)
+ print("~VS~")
+ print(surv2n)
+ gamemenuvs()
+end
+function gamemenuvs() --GAME CODE FOR VERSUS
+ length = nil
+ if found ==nil then
+  found = 0
+ end
+ run = 0
+ if turn == 1 then
+  print("PLAYER 1's TURN!")
+ end
+ if turn == 2 then
+  print("PLAYER 2's TURN!")
+ end
+ if miltime == 24 then
+  miltime = 0
+ end
+ print("There are ".. 24 - miltime.." hours left in your turn.")
+ turn = nil
+ io.write("What shall you do?")
+ if attempt == 1 then
+  io.write("\nThe game is sensitive to input!")
+  attempt = 0
+ end
+ io.write("\n")
+ print(pagebreak)
+ io.write("ACTIONS: Scavenge : Sleep : Fortify\n")
+ io.write("Fight : Exercise")
+ io.write("\nOTHER: Quit : Extras : Stats") --TODO STATS
+ -- io.write("\nVERSUS: Steal : Attack : Spy") --TODO
+ io.write("\n")
+ input = io.read()
+ if input == "" then
+  input = io.read()
+  if input == "" then
+   input = io.read()
+   if input == "" then
+    input = io.read()
+   end
+  end
+ end -- To fix this odd lua-based ignoring input glitch
+ input = string.lower(input) --LOWERCASE
+ menuaction = string.match(input, "%a+") --TAKE COMMAND
+ print(menuaction)
+ length = string.match(input, "%d+") --TAKE LENGTH
+ length = tonumber(length)
+ if length ~= nil then
+  if length > 24 then
+   print("Try a lower number...")
+   gamemenuvs()
+  end
+  if 24 - miltime ~= 0 then
+   if length > 24 - miltime then
+    print("You can't go past midnight!")
+   gamemenuvs()
+   end
+  end
+ end
+ os.execute("cls")
+ if menuaction == "scavenge" then --START OF ACTIONS
+  scavenge2vs()
+ elseif menuaction == "sleep" then --SLEEP
+  if length == nil then
+   print("How long?")
+   length = io.read("*number")
+  end
+  if length > 24 - miltime then
+   print("You can't go past midnight!")
+  end
+  hour = hour + length
+  miltime = miltime + length
+  if current == 1 then
+   surv1energy = surv1energy + length
+  elseif current == 2 then
+   surv2energy = surv2energy + length
+  else
+   print("ERROR DETECTED. FIXING.")
+   current = 1
+  end
+  print("You sleep for "..length.." hours.")
+ elseif menuaction == "fight" then --FIGHT
+  enemy="zombies"
+  combatsetup()
+ elseif menuaction == "fortify" then --FORTIFY
+  if length == nil then
+   print("How long?")
+   length = io.read("*number")
+  end
+  hour = hour + length
+  miltime = miltime + length
+  supplies = supplies - length * 3
+  if current == 1 then
+   surv1energy = surv1energy - length
+  elseif current == 2 then
+   surv2energy = surv2energy - length
+  else
+   print("ERROR DETECTED. FIXING.")
+   current = 1
+  end
+  if current == 2 then
+   surv2mHP = surv2mHP + length
+   surv2HP = surv2HP + length / 2
+  end
+  if current == 1 then
+   surv1mHP = surv1mHP + length
+   surv1HP = surv1HP + length / 2
+  end
+  print("You fortify your house for "..length.." hours.")
+ elseif menuaction == "exercise" then --EXERCISE
+  if length == nil then
+   print("How long?")
+   length = io.read("*number")
+  end
+  if current == 1 then
+   surv1energy = surv1energy - length * 2
+   surv1menergy = surv1menergy + length / 2
+  elseif current == 2 then
+   surv2energy = surv2energy - length * 2
+   surv2menergy = surv2menergy + length / 2
+  else
+   print("ERROR DETECTED. FIXING.")
+   current = 1
+  end
+  hour = hour + length
+  miltime = miltime + length
+  print("You exercise for "..length.." hours.")
+ elseif menuaction == "quit" then
+  print(pagebreak)
+  print("It's a draw!")
+  io.read()
+  mainmenu()
+ elseif menuaction == "stats" then
+  statsvs()
+ else
+  print("Invalid entry. Try again.")
+  print(pagebreak)
+  attempt = 1
+  gamemenuvs()
+ end
+ print(pagebreak)
+ regulatevs()
+end
+function statsvs() --STATS FOR VS
+ if surv1HP == 0 then
+  surv1disp = "[___DEAD___]"
+ elseif surv1HP/surv1mHP < .1 then
+  surv1disp = "[#_________]"
+ elseif surv1HP/surv1mHP < .2 then
+  surv1disp = "[##________]"
+ elseif surv1HP/surv1mHP < .3 then
+  surv1disp = "[###_______]"
+ elseif surv1HP/surv1mHP < .4 then
+  surv1disp = "[####______]"
+ elseif surv1HP/surv1mHP < .5 then
+  surv1disp = "[#####_____]"
+ elseif surv1HP/surv1mHP < .6 then
+  surv1disp = "[######____]"
+ elseif surv1HP/surv1mHP < .7 then
+  surv1disp = "[#######___]"
+ elseif surv1HP/surv1mHP < .8 then
+  surv1disp = "[########__]"
+ elseif surv1HP/surv1mHP < .9 then
+  surv1disp = "[#########_]"
+ elseif surv1HP/surv1mHP < 1 then
+  surv1disp = "[#########_]"
+ elseif surv1HP/surv1mHP == 1 then
+  surv1disp = "[##########]"
+ end
+ if surv2HP == 0 then
+  surv2disp = "[___DEAD___]"
+ elseif surv2HP/surv2mHP < .1 then
+  surv2disp = "[#_________]"
+ elseif surv2HP/surv2mHP < .2 then
+  surv2disp = "[##________]"
+ elseif surv2HP/surv2mHP < .3 then
+  surv2disp = "[###_______]"
+ elseif surv2HP/surv2mHP < .4 then
+  surv2disp = "[####______]"
+ elseif surv2HP/surv2mHP < .5 then
+  surv2disp = "[#####_____]"
+ elseif surv2HP/surv2mHP < .6 then
+  surv2disp = "[######____]"
+ elseif surv2HP/surv2mHP < .7 then
+  surv2disp = "[#######___]"
+ elseif surv2HP/surv2mHP < .8 then
+  surv2disp = "[########__]"
+ elseif surv2HP/surv2mHP < .9 then
+  surv2disp = "[#########_]"
+ elseif surv2HP/surv2mHP < 1 then
+  surv2disp = "[#########_]"
+ elseif surv2HP/surv2mHP == 1 then
+  surv2disp = "[##########]"
+ end
+ surv1energyd = surv1energy
+ surv2energyd = surv2energy
+ while string.len(surv1energyd) ~= 12 do
+  surv1energyd = surv1energyd.." "
+ end
+ while string.len(surv2energyd) ~= 12 do
+  surv2energyd = surv2energyd.." "
+ end
+ surv1menergyd = surv1menergy
+ surv2menergyd = surv2menergy
+ while string.len(surv1menergyd) ~= 12 do
+  surv1menergyd = " "..surv1menergyd
+ end
+ while string.len(surv2menergyd) ~= 12 do
+  surv2menergyd = " "..surv2menergyd
+ end
+ surv1nd = surv1n
+ surv2nd = surv2n
+ while string.len(surv1nd) ~= 14 do
+  surv1nd = surv1nd.." "
+ end
+ while string.len(surv2nd) ~= 14 do
+  surv2nd = surv2nd.." "
+ end
+ if current == 1 then
+  io.write("_**************________________\n")
+ else
+  io.write("________________**************_\n")
+ end
+ if current == 1 then
+  io.write("|"..surv1nd.."|"..surv2nd.."|\n")
+  io.write("|______________|______________|\n")
+  io.write("| "..surv1disp.." |  ??????????  |\n")
+  io.write("|______________|______________|\n")
+  io.write("| Energy:      | Energy:      |\n")
+  io.write("|"..surv1energyd.."  |???           |\n")
+  io.write("|  "..surv1menergyd.."|           ???|\n")
+  io.write("________________________________\n")
+ else
+  io.write("|"..surv1nd.."|"..surv2nd.."|\n")
+  io.write("|______________|______________|\n")
+  io.write("|  ??????????  | "..surv2disp.." |\n")
+  io.write("|______________|______________|\n")
+  io.write("| Energy:      | Energy:      |\n")
+  io.write("|???           |"..surv2energyd.."  |\n")
+  io.write("|           ???|  "..surv2menergyd.."|\n")
+  io.write("_______________________________\n")
+ end
+ io.write("Time: "..hour..":00"..AMPM..". Day "..day..".\n")
+ if current == 1 then
+  io.write("Supplies: "..supplies..". "..supplies / 10 .." Days remaining.\n")
+  io.write("\nINVENTORY:\n")
+  io.write("Ammo: "..ammo..".\n")
+  io.write("Arrows: "..arrows..".\n")
+ else
+  io.write("Supplies: "..supplies2..". "..supplies2 / 10 .." Days remaining.\n")
+  io.write("\nINVENTORY:\n")
+  io.write("Ammo: "..ammo2..".\n")
+  io.write("Arrows: "..arrows2..".\n")
+ end
+ print (pagebreak)
+ gamemenuvs()
+end
+function regulatevs() --FIX VERSUS OVERKILLS
+ if surv1HP > surv1mHP then
+  surv1HP = surv1mHP
+ end
+ if surv2HP > surv2mHP then
+  surv2HP = surv2mHP
+ end
+ if surv1HP < 0.1 then
+  print(surv1n.." has fallen!")
+  print(surv2n.." is victorious!")
+  over = true
+ end
+ if surv2HP < 0.1 then
+  print(surv2n.." has fallen!")
+  print(surv1n.." is victorious!")
+  over = true
+ end
+ if supplies < 0 then
+  supplies = 5
+  print(surv1n.." is out of supplies! Starving!")
+  surv1HP = surv1HP - 3
+ end
+ if supplies2 < 0 then
+  supplies2 = 5
+  print(surv2n.." is out of supplies! Starving!")
+  surv2HP = surv2HP - 3
+ end
+ if surv1energy < 0 then
+  print(surv1n.." passed out!")
+  surv1HP = surv1HP - 2
+  surv1energy = 5
+ end
+ if surv2energy < 0 then
+  print(surv2n.." passed out!")
+  surv2HP = surv2HP - 2
+  surv2energy = 5
+ end
+ if hour > 11 then
+  if AMPM == "AM" then
+   AMPM = "PM"
+  else
+   AMPM = "AM"
+   day = day + 1
+   miltime = 0
+   if current == 1 then
+    current = 2
+	print(surv2n.."'s turn!")
+   else
+    current = 1
+	print(surv1n.."'s turn!")
+   end
+  end
+  supplies = supplies - 5
+  supplies2 = supplies2 - 5
+  hour = 0
+ end
+ if over == true then
+  print(pagebreak)
+  print("Game over!")
+  print("press enter...")
+  io.read()
+  mainmenu()
+ end
+ gamemenuvs()
+end
+function scavenge2vs() --VERSUS SCAVENGING
+ if length == nil then
+  print("How long?")
+  length = io.read("*number")
+ end
+ if length > 24 then
+  print("Try less than a day!")
+  gamemenu()
+ end
+ hour = hour + length
+ miltime = miltime + length
+ if current == 1 then
+  surv1energy = surv1energy - length
+  supplies = supplies + length / 2
+ elseif current == 2 then
+  surv2energy = surv2energy - length
+  supplies2 = supplies2 + length / 2
+ end
+ chancehigh = length / 2
+ chancemed = length / 4
+ chancelow = length / 8
+ chancerare = length / 16
+ chancelegendary = length / 20
+ chanceholycrap = length / 24
+ found = 0
+ print("You scavenge for "..length.." hours.")
+ print(pagebreak)
+ if math.random(length) < chancemed then
+  print("You found some ammo!")
+  if current == 1 then
+   ammo = ammo + 5
+  else
+   ammo2 = ammo2 + 5
+  end
+ end
+ if math.random(length) < chancehigh then
+  print("You found some arrows!")
+  if current == 1 then
+   arrows = arrows + 5
+  else
+   arrows2 = arrows2 + 5
+  end
+ end
+ if math.random(length) < chancerare then
+  print("You found a machine gun!")
+  print("Replace your pistol?")
+  print("(Uses 3 ammo. Deals 2x more damage. Lower crit. chance.)")
+  confirm = io.read()
+  if confirm == "Yes" then
+   confirm = "yes"
+  end
+  if confirm == "yes" then
+   if current == 1 then
+    machinegun = "true"
+   else
+    machinegun2 = "true"
+   end
+  end
+ end
+ regulatevs()
 end
 if playing == 1 then
  gamemenu()
 end
+print("Produced by Epicyoobed")
+print("             ##")
+print("    #####   #  #")
+print("    #         #")
+print("    #       #  #")
+print("    ####     ##")
+print("    #")
+print("    #")
+print("    #####")
+print()
+print("Isaak 'DiggyHole' Rogers - Owner of Epicyoobed")
+print("Sam Gilmore - CoFounder of Epicyoobed")
+print("Alex Ryan - CoDeveloper of Revival")
+print("__________________________________________")
+print("Published by Karben Games")
+print("#     #")
+print("#   #")
+print("# #")
+print("#   #")
+print("#    #")
+print("#     #")
+print("G A M E S")
+print()
+print("Karim Chmayssani - Owner of Karben Games")
+print("Alex Ryan - Head Developer")
+t = os.time()
+while t-os.time() ~= -8 do
+end
+os.execute("cls")
 titlescreen()
