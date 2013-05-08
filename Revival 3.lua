@@ -220,14 +220,14 @@ function combat() --FIGHT!
 	if math.random(100) < 15 then
 	 print("Headshot!")
 	 zombiesHP=zombiesHP-20
-	else
-     ammo = ammo - 1
-     zombiesHP=zombiesHP-(survatk+10)
-     print("You shoot the "..enemy.." with your gun!")
-     if math.random(100) < 26 then
-      print("Headshot!")
-      zombiesHP=zombiesHP-20
-     end
+	end
+   else
+	ammo = ammo - 1
+	zombiesHP=zombiesHP-(survatk+10)
+	print("You shoot the "..enemy.." with your gun!")
+	if math.random(100) < 26 then
+	 print("Headshot!")
+	 zombiesHP=zombiesHP-20
 	end
    end
   else
