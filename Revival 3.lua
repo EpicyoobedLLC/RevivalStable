@@ -1,3 +1,4 @@
+os.execute("alias cls=clear")
 print("Loading...")
 print("Checking...")
 pagebreak = "--------------------------------------------------------------------------------"
